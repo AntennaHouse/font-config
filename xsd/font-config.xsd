@@ -106,7 +106,43 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="unicode-range" default="U+0-10FFFF"/>
+    <xs:attribute name="unicode-range" default="U+0-10FFFF">
+      <xs:annotation>
+        <xs:documentation>Range of applicable Unicode characters: &lt;unicode-range&gt;</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:union>
+          <xs:simpleType>
+            <xs:restriction>
+              <xs:simpleType>
+                <xs:list>
+                  <xs:simpleType>
+                    <xs:union>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:token">
+                          <xs:pattern value="U\+[0-9A-Fa-f]+(\?+|-[0-9A-Fa-f]+)?"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:token">
+                          <xs:pattern value="'[^']+'"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:union>
+                  </xs:simpleType>
+                </xs:list>
+              </xs:simpleType>
+              <xs:minLength value="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+          <xs:simpleType>
+            <xs:restriction base="xs:token">
+              <xs:enumeration value="all"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:union>
+      </xs:simpleType>
+    </xs:attribute>
     <xs:attribute name="font-size-adjust" default="1.0"/>
     <xs:attribute name="baseline-adjust" default="0.0"/>
   </xs:attributeGroup>

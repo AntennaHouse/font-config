@@ -123,7 +123,24 @@
   </define>
   <define name="font-entry.attlist" combine="interleave">
     <optional>
-      <attribute name="unicode-range" a:defaultValue="U+0-10FFFF"/>
+      <attribute name="unicode-range" a:defaultValue="U+0-10FFFF">
+        <a:documentation>Range of applicable Unicode characters: &lt;unicode-range&gt;</a:documentation>
+        <choice>
+          <list>
+            <oneOrMore>
+              <choice>
+                <data type="token">
+                  <param name="pattern">U\+[0-9A-Fa-f]+(\?+|-[0-9A-Fa-f]+)?</param>
+                </data>
+                <data type="token">
+                  <param name="pattern">'[^']+'</param>
+                </data>
+              </choice>
+            </oneOrMore>
+          </list>
+          <value>all</value>
+        </choice>
+      </attribute>
     </optional>
   </define>
   <define name="font-entry.attlist" combine="interleave">

@@ -52,8 +52,17 @@ font-entry.attlist &=
 font-entry.attlist &=
   [ a:defaultValue = "false" ]
   attribute font-exclude { "true" | "false" }?
+
 font-entry.attlist &=
-  [ a:defaultValue = "U+0-10FFFF" ] attribute unicode-range { text }?
+   ## Range of applicable Unicode characters: <unicode-range>
+   [ a:defaultValue = "U+0-10FFFF" ]
+attribute unicode-range {
+   list { ( xsd:token { pattern = "U\+[0-9A-Fa-f]+(\?+|-[0-9A-Fa-f]+)?" }
+          | xsd:token { pattern = "'[^']+'" } )+
+   }
+ | 'all'
+}?
+
 font-entry.attlist &=
   [ a:defaultValue = "1.0" ] attribute font-size-adjust { text }?
 font-entry.attlist &=
