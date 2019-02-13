@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <ref name="font-config"/>
+  </start>
+  <define name="font-config">
+    <element name="font-config">
+      <a:documentation>AH Formatter font configuration</a:documentation>
+      <ref name="font-config.attlist"/>
+      <ref name="font-config.model"/>
+    </element>
+  </define>
+  <define name="font-config.model">
+    <oneOrMore>
+      <ref name="font-folder"/>
+    </oneOrMore>
+    <optional>
+      <ref name="eudc-processing"/>
+    </optional>
+  </define>
+  <define name="font-config.attlist" combine="interleave">
+    <optional>
+      <attribute name="otf-metrics-mode" a:defaultValue="typographic">
+        <a:documentation>Method for evaluating font metrics of TrueType and OpenType fonts</a:documentation>
+        <choice>
+          <value>windows</value>
+          <value>typographic</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-config.attlist" combine="interleave">
+    <optional>
+      <attribute name="use-preferred-family" a:defaultValue="true">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-config.attlist" combine="interleave">
+    <optional>
+      <attribute name="name-processing-mode" a:defaultValue="default">
+        <choice>
+          <value>default</value>
+          <value>windows-name</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-config.attlist" combine="interleave">
+    <optional>
+      <attribute name="windows-registry" a:defaultValue="enable">
+        <choice>
+          <value>enable</value>
+          <value>disable</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-folder">
+    <element name="font-folder">
+      <ref name="font-folder.attlist"/>
+      <ref name="font-folder.model"/>
+    </element>
+  </define>
+  <define name="font-folder.model">
+    <zeroOrMore>
+      <choice>
+        <ref name="font-entry"/>
+        <ref name="font-alias"/>
+      </choice>
+    </zeroOrMore>
+  </define>
+  <define name="font-folder.attlist" combine="interleave">
+    <attribute name="path"/>
+  </define>
+  <define name="font-folder.attlist" combine="interleave">
+    <optional>
+      <attribute name="recursive" a:defaultValue="false">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-entry">
+    <element name="font-entry">
+      <ref name="font-entry.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <attribute name="file"/>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="glyph-list"/>
+    </optional>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="skip-glyphname-mapping" a:defaultValue="false">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="font-exclude" a:defaultValue="false">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="unicode-range" a:defaultValue="U+0-10FFFF"/>
+    </optional>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="font-size-adjust" a:defaultValue="1.0"/>
+    </optional>
+  </define>
+  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="baseline-adjust" a:defaultValue="0.0"/>
+    </optional>
+  </define>
+  <define name="font-alias">
+    <element name="font-alias">
+      <ref name="font-alias.attlist"/>
+      <zeroOrMore>
+        <ref name="alias"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="font-alias.attlist" combine="interleave">
+    <attribute name="file"/>
+  </define>
+  <define name="font-alias.attlist" combine="interleave">
+    <optional>
+      <attribute name="entry">
+        <data type="positiveInteger"/>
+      </attribute>
+    </optional>
+  </define>
+  <define name="alias">
+    <element name="alias">
+      <ref name="alias.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="alias.attlist" combine="interleave">
+    <attribute name="family-name"/>
+  </define>
+  <define name="alias.attlist" combine="interleave">
+    <optional>
+      <attribute name="weight">
+        <choice>
+          <value>normal</value>
+          <value>bold</value>
+          <value>100</value>
+          <value>200</value>
+          <value>300</value>
+          <value>400</value>
+          <value>500</value>
+          <value>600</value>
+          <value>700</value>
+          <value>800</value>
+          <value>900</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="alias.attlist" combine="interleave">
+    <optional>
+      <attribute name="italic">
+        <choice>
+          <value>true</value>
+          <value>false</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="eudc-processing">
+    <element name="eudc-processing">
+      <ref name="eudc-processing.attlist"/>
+      <ref name="eudc-processing.model"/>
+    </element>
+  </define>
+  <define name="eudc-processing.model">
+    <optional>
+      <ref name="eudc-range"/>
+    </optional>
+    <optional>
+      <ref name="eudc-system-default"/>
+    </optional>
+    <zeroOrMore>
+      <ref name="eudc-map"/>
+    </zeroOrMore>
+  </define>
+  <define name="eudc-processing.attlist" combine="interleave">
+    <optional>
+      <attribute name="mapping">
+        <choice>
+          <value>enable</value>
+          <value>disable</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="eudc-range">
+    <element name="eudc-range">
+      <ref name="eudc-range.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="eudc-range.attlist" combine="interleave">
+    <attribute name="start"/>
+  </define>
+  <define name="eudc-range.attlist" combine="interleave">
+    <attribute name="end"/>
+  </define>
+  <define name="eudc-system-default">
+    <element name="eudc-system-default">
+      <ref name="eudc-system-default.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="eudc-system-default.attlist" combine="interleave">
+    <attribute name="file-path"/>
+  </define>
+  <define name="eudc-map">
+    <element name="eudc-map">
+      <ref name="eudc-map.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="eudc-map.attlist" combine="interleave">
+    <attribute name="family-name"/>
+  </define>
+  <define name="eudc-map.attlist" combine="interleave">
+    <attribute name="file-path"/>
+  </define>
+</grammar>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="font-config">
+    <xs:annotation>
+      <xs:documentation>AH Formatter font configuration</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="font-config.model">
+          <xs:attributeGroup ref="font-config.attlist"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="font-config.model">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="font-folder"/>
+      <xs:element minOccurs="0" ref="eudc-processing"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:attributeGroup name="font-config.attlist">
+    <xs:attribute name="otf-metrics-mode" default="typographic">
+      <xs:annotation>
+        <xs:documentation>Method for evaluating font metrics of TrueType and OpenType fonts</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="windows"/>
+          <xs:enumeration value="typographic"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="use-preferred-family" default="true">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="name-processing-mode" default="default">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="default"/>
+          <xs:enumeration value="windows-name"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="windows-registry" default="enable">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="enable"/>
+          <xs:enumeration value="disable"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="font-folder">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="font-folder.model">
+          <xs:attributeGroup ref="font-folder.attlist"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="font-folder.model">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="font-entry"/>
+      <xs:element ref="font-alias"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:attributeGroup name="font-folder.attlist">
+    <xs:attribute name="path" use="required"/>
+    <xs:attribute name="recursive" default="false">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="font-entry">
+    <xs:complexType>
+      <xs:attributeGroup ref="font-entry.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="font-entry.attlist">
+    <xs:attribute name="file" use="required"/>
+    <xs:attribute name="glyph-list"/>
+    <xs:attribute name="skip-glyphname-mapping" default="false">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="font-exclude" default="false">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="unicode-range" default="U+0-10FFFF"/>
+    <xs:attribute name="font-size-adjust" default="1.0"/>
+    <xs:attribute name="baseline-adjust" default="0.0"/>
+  </xs:attributeGroup>
+  <xs:element name="font-alias">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="alias"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="font-alias.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="font-alias.attlist">
+    <xs:attribute name="file" use="required"/>
+    <xs:attribute name="entry" type="xs:positiveInteger"/>
+  </xs:attributeGroup>
+  <xs:element name="alias">
+    <xs:complexType>
+      <xs:attributeGroup ref="alias.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="alias.attlist">
+    <xs:attribute name="family-name" use="required"/>
+    <xs:attribute name="weight">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="normal"/>
+          <xs:enumeration value="bold"/>
+          <xs:enumeration value="100"/>
+          <xs:enumeration value="200"/>
+          <xs:enumeration value="300"/>
+          <xs:enumeration value="400"/>
+          <xs:enumeration value="500"/>
+          <xs:enumeration value="600"/>
+          <xs:enumeration value="700"/>
+          <xs:enumeration value="800"/>
+          <xs:enumeration value="900"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="italic">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="true"/>
+          <xs:enumeration value="false"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="eudc-processing">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="eudc-processing.model">
+          <xs:attributeGroup ref="eudc-processing.attlist"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="eudc-processing.model">
+    <xs:sequence>
+      <xs:element minOccurs="0" ref="eudc-range"/>
+      <xs:element minOccurs="0" ref="eudc-system-default"/>
+      <xs:element minOccurs="0" maxOccurs="unbounded" ref="eudc-map"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:attributeGroup name="eudc-processing.attlist">
+    <xs:attribute name="mapping">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="enable"/>
+          <xs:enumeration value="disable"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="eudc-range">
+    <xs:complexType>
+      <xs:attributeGroup ref="eudc-range.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="eudc-range.attlist">
+    <xs:attribute name="start" use="required"/>
+    <xs:attribute name="end" use="required"/>
+  </xs:attributeGroup>
+  <xs:element name="eudc-system-default">
+    <xs:complexType>
+      <xs:attributeGroup ref="eudc-system-default.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="eudc-system-default.attlist">
+    <xs:attribute name="file-path" use="required"/>
+  </xs:attributeGroup>
+  <xs:element name="eudc-map">
+    <xs:complexType>
+      <xs:attributeGroup ref="eudc-map.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="eudc-map.attlist">
+    <xs:attribute name="family-name" use="required"/>
+    <xs:attribute name="file-path" use="required"/>
+  </xs:attributeGroup>
+</xs:schema>

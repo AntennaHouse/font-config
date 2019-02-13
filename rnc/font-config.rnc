@@ -1,0 +1,101 @@
+# Copyright 2019 Antenna House, Inc. All rights reserved.
+
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+start = font-config
+
+font-config =
+   ## AH Formatter font configuration
+   element font-config {
+      font-config.attlist,
+      font-config.model
+   }
+
+font-config.model =
+   font-folder+, eudc-processing?
+
+font-config.attlist &=
+   ## Method for evaluating font metrics of TrueType and OpenType fonts
+   [ a:defaultValue = "typographic" ]
+   attribute otf-metrics-mode { "windows" | "typographic" }?
+
+font-config.attlist &=
+  [ a:defaultValue = "true" ]
+  attribute use-preferred-family { "true" | "false" }?
+
+font-config.attlist &=
+  [ a:defaultValue = "default" ]
+  attribute name-processing-mode { "default" | "windows-name" }?
+
+font-config.attlist &=
+  [ a:defaultValue = "enable" ]
+  attribute windows-registry { "enable" | "disable" }?
+
+font-folder =
+   element font-folder {
+      font-folder.attlist,
+      font-folder.model
+   }
+
+font-folder.model =
+   (font-entry | font-alias)*
+
+font-folder.attlist &= attribute path { text }
+font-folder.attlist &=
+  [ a:defaultValue = "false" ] attribute recursive { "true" | "false" }?
+font-entry = element font-entry { font-entry.attlist, empty }
+font-entry.attlist &= attribute file { text }
+font-entry.attlist &= attribute glyph-list { text }?
+font-entry.attlist &=
+  [ a:defaultValue = "false" ]
+  attribute skip-glyphname-mapping { "true" | "false" }?
+font-entry.attlist &=
+  [ a:defaultValue = "false" ]
+  attribute font-exclude { "true" | "false" }?
+font-entry.attlist &=
+  [ a:defaultValue = "U+0-10FFFF" ] attribute unicode-range { text }?
+font-entry.attlist &=
+  [ a:defaultValue = "1.0" ] attribute font-size-adjust { text }?
+font-entry.attlist &=
+  [ a:defaultValue = "0.0" ] attribute baseline-adjust { text }?
+font-alias = element font-alias { font-alias.attlist, alias* }
+font-alias.attlist &= attribute file { text }
+font-alias.attlist &= attribute entry { xsd:positiveInteger }?
+alias = element alias { alias.attlist, empty }
+alias.attlist &= attribute family-name { text }
+alias.attlist &=
+  attribute weight {
+    "normal"
+    | "bold"
+    | "100"
+    | "200"
+    | "300"
+    | "400"
+    | "500"
+    | "600"
+    | "700"
+    | "800"
+    | "900"
+  }?
+alias.attlist &= attribute italic { "true" | "false" }?
+eudc-processing =
+  element eudc-processing {
+    eudc-processing.attlist,
+    eudc-processing.model
+  }
+
+eudc-processing.model =
+   eudc-range?,
+   eudc-system-default?,
+   eudc-map*
+
+eudc-processing.attlist &= attribute mapping { "enable" | "disable" }?
+eudc-range = element eudc-range { eudc-range.attlist, empty }
+eudc-range.attlist &= attribute start { text }
+eudc-range.attlist &= attribute end { text }
+eudc-system-default =
+  element eudc-system-default { eudc-system-default.attlist, empty }
+eudc-system-default.attlist &= attribute file-path { text }
+eudc-map = element eudc-map { eudc-map.attlist, empty }
+eudc-map.attlist &= attribute family-name { text }
+eudc-map.attlist &= attribute file-path { text }

@@ -1,0 +1,55 @@
+<?xml encoding="UTF-8"?>
+
+<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+
+<!ENTITY % font-config.model "font-folder+,eudc-processing?">
+
+<!ELEMENT font-config (%font-config.model;)>
+
+<!ATTLIST font-config
+  otf-metrics-mode (windows|typographic) 'typographic'>
+
+<!ENTITY % font-folder.model "(font-entry|font-alias)*">
+
+<!ELEMENT font-folder (%font-folder.model;)>
+
+<!ATTLIST font-folder
+  path CDATA #REQUIRED>
+
+<!ELEMENT font-entry EMPTY>
+
+<!ATTLIST font-entry
+  file CDATA #REQUIRED>
+
+<!ELEMENT font-alias (alias)*>
+
+<!ATTLIST font-alias
+  file CDATA #REQUIRED>
+
+<!ELEMENT alias EMPTY>
+
+<!ATTLIST alias
+  family-name CDATA #REQUIRED>
+
+<!ENTITY % eudc-processing.model "eudc-range?,eudc-system-default?,
+                                  eudc-map*">
+
+<!ELEMENT eudc-processing (%eudc-processing.model;)>
+
+<!ATTLIST eudc-processing
+  mapping (enable|disable) #IMPLIED>
+
+<!ELEMENT eudc-range EMPTY>
+
+<!ATTLIST eudc-range
+  start CDATA #REQUIRED>
+
+<!ELEMENT eudc-system-default EMPTY>
+
+<!ATTLIST eudc-system-default
+  file-path CDATA #REQUIRED>
+
+<!ELEMENT eudc-map EMPTY>
+
+<!ATTLIST eudc-map
+  family-name CDATA #REQUIRED>

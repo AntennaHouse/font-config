@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- DOCTYPE font-config SYSTEM "font-config.dtd" -->
+<font-config otf-metrics-mode="typographic">
+  <!-- add your font folder here -->
+  <!-- <font-folder path="/home/user-name/fonts" /> -->
+  <font-folder path="[Install directory]/fonts">
+    <font-entry file="ZapfDingbats.afm"
+          glyph-list="ZapfDingbats-glyphname.txt"/>
+  </font-folder>
+</font-config>
