@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
     <xt:extension id="focheck">
-        <xt:location href="https://raw.githubusercontent.com/AntennaHouse/font-config/releases/download/v7.2.4/font-config-framework-7.2.4.zip"/>
+        <xt:location href="https://github.com/AntennaHouse/font-config/releases/download/v7.2.4/font-config-framework-7.2.4.zip"/>
         <xt:version>7.2.4</xt:version>
         <xt:oxy_version>14.0+</xt:oxy_version>
         <xt:type>framework</xt:type>
