@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- DOCTYPE font-config SYSTEM "font-config.dtd" -->
-<font-config otf-metrics-mode="typographic">
+<font-config>
   <!-- add your font folder here -->
   <font-folder path="[System font directory]" />
 </font-config>
