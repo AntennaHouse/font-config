@@ -1,6 +1,23 @@
-# Copyright 2019 Antenna House, Inc. All rights reserved.
+# Schema for AH Formatter Font Configuration File.
+#
+# Copyright 2019-2022 Antenna House, Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+ah.boolean =
+    'false' | 'true'
 
 start = font-config
 
@@ -12,26 +29,17 @@ font-config =
    }
 
 font-config.model =
-   font-folder+, eudc-processing?
+   ((font-folder+, acc-folder?) |
+      (acc-folder, font-folder+)),
+   eudc-processing?
 
-font-config.attlist &=
-   ## Method for evaluating font metrics of TrueType and OpenType fonts
-   [ a:defaultValue = "typographic" ]
-   attribute otf-metrics-mode { "windows" | "typographic" }?
-
-font-config.attlist &=
-  [ a:defaultValue = "true" ]
-  attribute use-preferred-family { "true" | "false" }?
-
-font-config.attlist &=
-  [ a:defaultValue = "default" ]
-  attribute name-processing-mode { "default" | "windows-name" }?
-
-font-config.attlist &=
-  [ a:defaultValue = "enable" ]
-  attribute windows-registry { "enable" | "disable" }?
+font-config.attlist =
+   ## Whether to get EUDC information from Windows registry: enable | disable
+   [ a:defaultValue = "enable" ]
+   attribute windows-registry { "enable" | "disable" }?
 
 font-folder =
+   ## Folder containing fonts
    element font-folder {
       font-folder.attlist,
       font-folder.model
@@ -40,71 +48,147 @@ font-folder =
 font-folder.model =
    (font-entry | font-alias)*
 
-font-folder.attlist &= attribute path { text }
-font-folder.attlist &=
-  [ a:defaultValue = "false" ] attribute recursive { "true" | "false" }?
-font-entry = element font-entry { font-entry.attlist, empty }
-font-entry.attlist &= attribute file { text }
-font-entry.attlist &= attribute glyph-list { text }?
-font-entry.attlist &=
-  [ a:defaultValue = "false" ]
-  attribute skip-glyphname-mapping { "true" | "false" }?
-font-entry.attlist &=
-  [ a:defaultValue = "false" ]
-  attribute font-exclude { "true" | "false" }?
+font-folder.attlist =
+   ## Path of font folder
+   attribute path { text },
+   ## Whether to include subfolders: true | false
+   [ a:defaultValue = "false" ]
+   attribute recursive { ah.boolean }?
 
-font-entry.attlist &=
+font-entry =
+   ## Configuration for an individual font file
+   element font-entry {
+      font-entry.attlist,
+      empty
+   }
+
+font-entry.attlist =
+   ## Font file to include or exclude
+   attribute file { text },
+   ## Glyph-list file for Type 1 font
+   attribute glyph-list { text }?,
+   ## Whether to skip mapping Unicode to glyph names for a Type 1 font
+   [ a:defaultValue = "true" ]
+   attribute skip-glyphname-mapping { ah.boolean }?,
+   ## Whether to exclude the font file: true | false
+   [ a:defaultValue = "false" ]
+   attribute font-exclude { ah.boolean }?,
    ## Range of applicable Unicode characters: <unicode-range>
    [ a:defaultValue = "U+0-10FFFF" ]
-attribute unicode-range {
-   list { ( xsd:token { pattern = "U\+[0-9A-Fa-f]+(\?+|-[0-9A-Fa-f]+)?" }
-          | xsd:token { pattern = "'[^']+'" } )+
-   }
- | 'all'
-}?
+   attribute unicode-range {
+     list { ( xsd:token { pattern = "U\+[0-9A-Fa-f]+(\?+|-[0-9A-Fa-f]+)?" }
+            | xsd:token { pattern = "'[^']+'" } )+
+     }
+     | 'all'
+   }?,
+   ## Font size adjustment: <number> | <percentage>
+   [ a:defaultValue = "1.0" ]
+   attribute font-size-adjust { text }?,
+   ## Adjustment to font baseline: <number> | <percentage>
+   [ a:defaultValue = "0.0" ]
+   attribute baseline-adjust { text }?,
+   ## x-height: <number>
+   attribute x-height { text }?,
+   ## Cap height: <number>
+   attribute cap-height { text }?
 
-font-entry.attlist &=
-  [ a:defaultValue = "1.0" ] attribute font-size-adjust { text }?
-font-entry.attlist &=
-  [ a:defaultValue = "0.0" ] attribute baseline-adjust { text }?
-font-alias = element font-alias { font-alias.attlist, alias* }
-font-alias.attlist &= attribute file { text }
-font-alias.attlist &= attribute entry { xsd:positiveInteger }?
-alias = element alias { alias.attlist, empty }
-alias.attlist &= attribute family-name { text }
-alias.attlist &=
-  attribute weight {
-    "normal"
-    | "bold"
-    | "100"
-    | "200"
-    | "300"
-    | "400"
-    | "500"
-    | "600"
-    | "700"
-    | "800"
-    | "900"
-  }?
-alias.attlist &= attribute italic { "true" | "false" }?
+font-alias =
+   element font-alias {
+      font-alias.attlist,
+      alias+
+   }
+
+font-alias.attlist =
+   ## Font file to alias to a different name
+   attribute file { text },
+   ## Entry number in a .TTC (TrueType Collection) file
+   [ a:defaultValue = "1" ]
+   attribute entry { xsd:positiveInteger }?
+
+alias =
+   ## Alias to use to refer to a font file or TTC entry
+   element alias {
+      alias.attlist,
+      empty
+   }
+alias.attlist =
+   ## Font family name to use for font file or TTC entry
+   attribute family-name { text },
+   ## Font weight that selects the aliased font file or TTC entry
+   [ a:defaultValue = "normal" ]
+   attribute weight {
+     "normal"
+     | "bold"
+     | "100"
+     | "200"
+     | "300"
+     | "400"
+     | "500"
+     | "600"
+     | "700"
+     | "800"
+     | "900"
+   }?,
+   ## Whether italic font style selects the aliased font file or TTC entry
+   [ a:defaultValue = "false" ]
+   attribute italic { ah.boolean }?
+
+
+acc-folder =
+   ## Adobe Fonts folder
+   element acc-folder {
+      acc-folder.attlist,
+      empty
+   }
+
+acc-folder.attlist =
+   ## Path to Adobe Fonts folder
+   attribute path { text }
+
 eudc-processing =
+   ## End User Defined Character (EUDC) configuration
   element eudc-processing {
     eudc-processing.attlist,
     eudc-processing.model
   }
 
 eudc-processing.model =
-   eudc-range?,
+   eudc-range+,
    eudc-system-default?,
    eudc-map*
 
-eudc-processing.attlist &= attribute mapping { "enable" | "disable" }?
+eudc-processing.attlist =
+   ## Whether to enable EUDC processing: enable | disable
+   [ a:defaultValue = "enable" ]
+   attribute mapping { "enable" | "disable" }?
+
 eudc-range = element eudc-range { eudc-range.attlist, empty }
-eudc-range.attlist &= attribute start { text }
-eudc-range.attlist &= attribute end { text }
+eudc-range.attlist =
+   ## Start of the EUDC range
+   attribute start { xsd:integer },
+   ## End of the EUDC range
+   attribute end { xsd:integer }?
+
 eudc-system-default =
-  element eudc-system-default { eudc-system-default.attlist, empty }
-eudc-system-default.attlist &= attribute file-path { text }
-eudc-map = element eudc-map { eudc-map.attlist, empty }
-eudc-map.attlist &= attribute family-name { text }
-eudc-map.attlist &= attribute file-path { text }
+   ## System default EUDC font file
+   element eudc-system-default {
+      eudc-system-default.attlist,
+      empty
+   }
+
+eudc-system-default.attlist =
+   ## Path to EUDC font file
+   attribute file-path { text }
+
+eudc-map =
+   ## EUDC file for a font family
+   element eudc-map {
+      eudc-map.attlist,
+      empty
+   }
+
+eudc-map.attlist =
+   ## Font family name
+   attribute family-name { text },
+   ## Path of EUDC file
+   attribute file-path { text }
