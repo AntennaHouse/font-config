@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="font-config" basedir="." default="schema.translate">
+<project name="font-config" basedir="." default="schema.translate"
+	 xmlns:if="ant:if"
+	 xmlns:unless="ant:unless">
 <description>Antenna House Font Configuration File.</description>
 <!--
-     Copyright 2016 Antenna House, Inc.
+     Copyright 2016-2022 Antenna House, Inc.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!--
+BEFORE making a release on GitHub:
+ - Commit all hand-modified files
+ - Make sure that ${version} in build.properties is correct
+ - Run the 'release' target with '-Dforce=yes'
+ - Commit build.properties and the generated files with a
+   'Releasing hyphenation-info x.y.z.' commit message
+ - Push the commits to GitHub.
+
+AFTER making a release on GitHub:
+ - Increment ${version} in build.properties so it's not possible
+   to accidentally overwrite a release's Zip file with different
+   versions of files.
 -->
 
 <!-- PROPERTIES -->
-
 <dirname property="font-config.basedir" file="${ant.file.font-config}"/>
 
 <pathconvert property="font-config.basedir.converted" dirsep="/">
@@ -58,6 +86,7 @@
 
 <tstamp>
   <format property="timestamp" pattern="yyyy-MM-dd"/>
+  <format property="year" pattern="yyyy" />
 </tstamp>
 
 <!-- trang.jar location depends on if run from oXygen or on OS. -->
@@ -159,6 +188,12 @@
     <regexp pattern='releases/download/[^"]+' />
     <substitution
 	expression="releases/download/v${version}/${ant.project.name}-framework-${version}.zip"/>
+  </replaceregexp>
+  <replaceregexp file="${font-config.basedir.converted}/add-on.xml"
+		 encoding="UTF-8">
+    <regexp pattern='Copyright ([0-9]+)-[0-9]+' />
+    <substitution
+	expression="Copyright \1-${year}"/>
   </replaceregexp>
 </target>
 
