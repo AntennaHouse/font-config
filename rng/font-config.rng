@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+<!--
+  Schema for AH Formatter Font Configuration File.
+  
+  Copyright 2019-2022 Antenna House, Inc. All rights reserved.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="ah.boolean">
+    <choice>
+      <value>false</value>
+      <value>true</value>
+    </choice>
+  </define>
   <start>
     <ref name="font-config"/>
   </start>
@@ -12,47 +34,30 @@
     </element>
   </define>
   <define name="font-config.model">
-    <oneOrMore>
-      <ref name="font-folder"/>
-    </oneOrMore>
+    <choice>
+      <group>
+        <oneOrMore>
+          <ref name="font-folder"/>
+        </oneOrMore>
+        <optional>
+          <ref name="acc-folder"/>
+        </optional>
+      </group>
+      <group>
+        <ref name="acc-folder"/>
+        <oneOrMore>
+          <ref name="font-folder"/>
+        </oneOrMore>
+      </group>
+    </choice>
     <optional>
       <ref name="eudc-processing"/>
     </optional>
   </define>
-  <define name="font-config.attlist" combine="interleave">
-    <optional>
-      <attribute name="otf-metrics-mode" a:defaultValue="typographic">
-        <a:documentation>Method for evaluating font metrics of TrueType and OpenType fonts</a:documentation>
-        <choice>
-          <value>windows</value>
-          <value>typographic</value>
-        </choice>
-      </attribute>
-    </optional>
-  </define>
-  <define name="font-config.attlist" combine="interleave">
-    <optional>
-      <attribute name="use-preferred-family" a:defaultValue="true">
-        <choice>
-          <value>true</value>
-          <value>false</value>
-        </choice>
-      </attribute>
-    </optional>
-  </define>
-  <define name="font-config.attlist" combine="interleave">
-    <optional>
-      <attribute name="name-processing-mode" a:defaultValue="default">
-        <choice>
-          <value>default</value>
-          <value>windows-name</value>
-        </choice>
-      </attribute>
-    </optional>
-  </define>
-  <define name="font-config.attlist" combine="interleave">
+  <define name="font-config.attlist">
     <optional>
       <attribute name="windows-registry" a:defaultValue="enable">
+        <a:documentation>Whether to get EUDC information from Windows registry: enable | disable</a:documentation>
         <choice>
           <value>enable</value>
           <value>disable</value>
@@ -62,6 +67,7 @@
   </define>
   <define name="font-folder">
     <element name="font-folder">
+      <a:documentation>Folder containing fonts</a:documentation>
       <ref name="font-folder.attlist"/>
       <ref name="font-folder.model"/>
     </element>
@@ -74,54 +80,45 @@
       </choice>
     </zeroOrMore>
   </define>
-  <define name="font-folder.attlist" combine="interleave">
-    <attribute name="path"/>
-  </define>
-  <define name="font-folder.attlist" combine="interleave">
+  <define name="font-folder.attlist">
+    <attribute name="path">
+      <a:documentation>Path of font folder</a:documentation>
+    </attribute>
     <optional>
       <attribute name="recursive" a:defaultValue="false">
-        <choice>
-          <value>true</value>
-          <value>false</value>
-        </choice>
+        <a:documentation>Whether to include subfolders: true | false</a:documentation>
+        <ref name="ah.boolean"/>
       </attribute>
     </optional>
   </define>
   <define name="font-entry">
     <element name="font-entry">
+      <a:documentation>Configuration for an individual font file</a:documentation>
       <ref name="font-entry.attlist"/>
       <empty/>
     </element>
   </define>
-  <define name="font-entry.attlist" combine="interleave">
-    <attribute name="file"/>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
+  <define name="font-entry.attlist">
+    <attribute name="file">
+      <a:documentation>Font file to include or exclude</a:documentation>
+    </attribute>
     <optional>
-      <attribute name="glyph-list"/>
-    </optional>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
-    <optional>
-      <attribute name="skip-glyphname-mapping" a:defaultValue="false">
-        <choice>
-          <value>true</value>
-          <value>false</value>
-        </choice>
+      <attribute name="glyph-list">
+        <a:documentation>Glyph-list file for Type 1 font</a:documentation>
       </attribute>
     </optional>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
+    <optional>
+      <attribute name="skip-glyphname-mapping" a:defaultValue="true">
+        <a:documentation>Whether to skip mapping Unicode to glyph names for a Type 1 font</a:documentation>
+        <ref name="ah.boolean"/>
+      </attribute>
+    </optional>
     <optional>
       <attribute name="font-exclude" a:defaultValue="false">
-        <choice>
-          <value>true</value>
-          <value>false</value>
-        </choice>
+        <a:documentation>Whether to exclude the font file: true | false</a:documentation>
+        <ref name="ah.boolean"/>
       </attribute>
     </optional>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
     <optional>
       <attribute name="unicode-range" a:defaultValue="U+0-10FFFF">
         <a:documentation>Range of applicable Unicode characters: &lt;unicode-range&gt;</a:documentation>
@@ -142,47 +139,60 @@
         </choice>
       </attribute>
     </optional>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
     <optional>
-      <attribute name="font-size-adjust" a:defaultValue="1.0"/>
+      <attribute name="font-size-adjust" a:defaultValue="1.0">
+        <a:documentation>Font size adjustment: &lt;number&gt; | &lt;percentage&gt;</a:documentation>
+      </attribute>
     </optional>
-  </define>
-  <define name="font-entry.attlist" combine="interleave">
     <optional>
-      <attribute name="baseline-adjust" a:defaultValue="0.0"/>
+      <attribute name="baseline-adjust" a:defaultValue="0.0">
+        <a:documentation>Adjustment to font baseline: &lt;number&gt; | &lt;percentage&gt;</a:documentation>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="x-height">
+        <a:documentation>x-height: &lt;number&gt;</a:documentation>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="cap-height">
+        <a:documentation>Cap height: &lt;number&gt;</a:documentation>
+      </attribute>
     </optional>
   </define>
   <define name="font-alias">
     <element name="font-alias">
       <ref name="font-alias.attlist"/>
-      <zeroOrMore>
+      <oneOrMore>
         <ref name="alias"/>
-      </zeroOrMore>
+      </oneOrMore>
     </element>
   </define>
-  <define name="font-alias.attlist" combine="interleave">
-    <attribute name="file"/>
-  </define>
-  <define name="font-alias.attlist" combine="interleave">
+  <define name="font-alias.attlist">
+    <attribute name="file">
+      <a:documentation>Font file to alias to a different name</a:documentation>
+    </attribute>
     <optional>
-      <attribute name="entry">
+      <attribute name="entry" a:defaultValue="1">
+        <a:documentation>Entry number in a .TTC (TrueType Collection) file</a:documentation>
         <data type="positiveInteger"/>
       </attribute>
     </optional>
   </define>
   <define name="alias">
     <element name="alias">
+      <a:documentation>Alias to use to refer to a font file or TTC entry</a:documentation>
       <ref name="alias.attlist"/>
       <empty/>
     </element>
   </define>
-  <define name="alias.attlist" combine="interleave">
-    <attribute name="family-name"/>
-  </define>
-  <define name="alias.attlist" combine="interleave">
+  <define name="alias.attlist">
+    <attribute name="family-name">
+      <a:documentation>Font family name to use for font file or TTC entry</a:documentation>
+    </attribute>
     <optional>
-      <attribute name="weight">
+      <attribute name="weight" a:defaultValue="normal">
+        <a:documentation>Font weight that selects the aliased font file or TTC entry</a:documentation>
         <choice>
           <value>normal</value>
           <value>bold</value>
@@ -198,27 +208,36 @@
         </choice>
       </attribute>
     </optional>
-  </define>
-  <define name="alias.attlist" combine="interleave">
     <optional>
-      <attribute name="italic">
-        <choice>
-          <value>true</value>
-          <value>false</value>
-        </choice>
+      <attribute name="italic" a:defaultValue="false">
+        <a:documentation>Whether italic font style selects the aliased font file or TTC entry</a:documentation>
+        <ref name="ah.boolean"/>
       </attribute>
     </optional>
   </define>
+  <define name="acc-folder">
+    <element name="acc-folder">
+      <a:documentation>Adobe Fonts folder</a:documentation>
+      <ref name="acc-folder.attlist"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="acc-folder.attlist">
+    <attribute name="path">
+      <a:documentation>Path to Adobe Fonts folder</a:documentation>
+    </attribute>
+  </define>
   <define name="eudc-processing">
     <element name="eudc-processing">
+      <a:documentation>End User Defined Character (EUDC) configuration</a:documentation>
       <ref name="eudc-processing.attlist"/>
       <ref name="eudc-processing.model"/>
     </element>
   </define>
   <define name="eudc-processing.model">
-    <optional>
+    <oneOrMore>
       <ref name="eudc-range"/>
-    </optional>
+    </oneOrMore>
     <optional>
       <ref name="eudc-system-default"/>
     </optional>
@@ -226,9 +245,10 @@
       <ref name="eudc-map"/>
     </zeroOrMore>
   </define>
-  <define name="eudc-processing.attlist" combine="interleave">
+  <define name="eudc-processing.attlist">
     <optional>
-      <attribute name="mapping">
+      <attribute name="mapping" a:defaultValue="enable">
+        <a:documentation>Whether to enable EUDC processing: enable | disable</a:documentation>
         <choice>
           <value>enable</value>
           <value>disable</value>
@@ -242,31 +262,43 @@
       <empty/>
     </element>
   </define>
-  <define name="eudc-range.attlist" combine="interleave">
-    <attribute name="start"/>
-  </define>
-  <define name="eudc-range.attlist" combine="interleave">
-    <attribute name="end"/>
+  <define name="eudc-range.attlist">
+    <attribute name="start">
+      <a:documentation>Start of the EUDC range</a:documentation>
+      <data type="integer"/>
+    </attribute>
+    <optional>
+      <attribute name="end">
+        <a:documentation>End of the EUDC range</a:documentation>
+        <data type="integer"/>
+      </attribute>
+    </optional>
   </define>
   <define name="eudc-system-default">
     <element name="eudc-system-default">
+      <a:documentation>System default EUDC font file</a:documentation>
       <ref name="eudc-system-default.attlist"/>
       <empty/>
     </element>
   </define>
-  <define name="eudc-system-default.attlist" combine="interleave">
-    <attribute name="file-path"/>
+  <define name="eudc-system-default.attlist">
+    <attribute name="file-path">
+      <a:documentation>Path to EUDC font file</a:documentation>
+    </attribute>
   </define>
   <define name="eudc-map">
     <element name="eudc-map">
+      <a:documentation>EUDC file for a font family</a:documentation>
       <ref name="eudc-map.attlist"/>
       <empty/>
     </element>
   </define>
-  <define name="eudc-map.attlist" combine="interleave">
-    <attribute name="family-name"/>
-  </define>
-  <define name="eudc-map.attlist" combine="interleave">
-    <attribute name="file-path"/>
+  <define name="eudc-map.attlist">
+    <attribute name="family-name">
+      <a:documentation>Font family name</a:documentation>
+    </attribute>
+    <attribute name="file-path">
+      <a:documentation>Path of EUDC file</a:documentation>
+    </attribute>
   </define>
 </grammar>

@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+<!--
+  Schema for AH Formatter Font Configuration File.
+  
+  Copyright 2019-2022 Antenna House, Inc. All rights reserved.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:simpleType name="ah.boolean">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="false"/>
+      <xs:enumeration value="true"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:element name="font-config">
     <xs:annotation>
       <xs:documentation>AH Formatter font configuration</xs:documentation>
@@ -15,39 +37,24 @@
   </xs:element>
   <xs:complexType name="font-config.model">
     <xs:sequence>
-      <xs:element maxOccurs="unbounded" ref="font-folder"/>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" ref="font-folder"/>
+          <xs:element minOccurs="0" ref="acc-folder"/>
+        </xs:sequence>
+        <xs:sequence>
+          <xs:element ref="acc-folder"/>
+          <xs:element maxOccurs="unbounded" ref="font-folder"/>
+        </xs:sequence>
+      </xs:choice>
       <xs:element minOccurs="0" ref="eudc-processing"/>
     </xs:sequence>
   </xs:complexType>
   <xs:attributeGroup name="font-config.attlist">
-    <xs:attribute name="otf-metrics-mode" default="typographic">
-      <xs:annotation>
-        <xs:documentation>Method for evaluating font metrics of TrueType and OpenType fonts</xs:documentation>
-      </xs:annotation>
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="windows"/>
-          <xs:enumeration value="typographic"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="use-preferred-family" default="true">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="true"/>
-          <xs:enumeration value="false"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="name-processing-mode" default="default">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="default"/>
-          <xs:enumeration value="windows-name"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
     <xs:attribute name="windows-registry" default="enable">
+      <xs:annotation>
+        <xs:documentation>Whether to get EUDC information from Windows registry: enable | disable</xs:documentation>
+      </xs:annotation>
       <xs:simpleType>
         <xs:restriction base="xs:token">
           <xs:enumeration value="enable"/>
@@ -57,6 +64,9 @@
     </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="font-folder">
+    <xs:annotation>
+      <xs:documentation>Folder containing fonts</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="font-folder.model">
@@ -72,39 +82,45 @@
     </xs:choice>
   </xs:complexType>
   <xs:attributeGroup name="font-folder.attlist">
-    <xs:attribute name="path" use="required"/>
-    <xs:attribute name="recursive" default="false">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="true"/>
-          <xs:enumeration value="false"/>
-        </xs:restriction>
-      </xs:simpleType>
+    <xs:attribute name="path" use="required">
+      <xs:annotation>
+        <xs:documentation>Path of font folder</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="recursive" default="false" type="ah.boolean">
+      <xs:annotation>
+        <xs:documentation>Whether to include subfolders: true | false</xs:documentation>
+      </xs:annotation>
     </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="font-entry">
+    <xs:annotation>
+      <xs:documentation>Configuration for an individual font file</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:attributeGroup ref="font-entry.attlist"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="font-entry.attlist">
-    <xs:attribute name="file" use="required"/>
-    <xs:attribute name="glyph-list"/>
-    <xs:attribute name="skip-glyphname-mapping" default="false">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="true"/>
-          <xs:enumeration value="false"/>
-        </xs:restriction>
-      </xs:simpleType>
+    <xs:attribute name="file" use="required">
+      <xs:annotation>
+        <xs:documentation>Font file to include or exclude</xs:documentation>
+      </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="font-exclude" default="false">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="true"/>
-          <xs:enumeration value="false"/>
-        </xs:restriction>
-      </xs:simpleType>
+    <xs:attribute name="glyph-list">
+      <xs:annotation>
+        <xs:documentation>Glyph-list file for Type 1 font</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="skip-glyphname-mapping" default="true" type="ah.boolean">
+      <xs:annotation>
+        <xs:documentation>Whether to skip mapping Unicode to glyph names for a Type 1 font</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="font-exclude" default="false" type="ah.boolean">
+      <xs:annotation>
+        <xs:documentation>Whether to exclude the font file: true | false</xs:documentation>
+      </xs:annotation>
     </xs:attribute>
     <xs:attribute name="unicode-range" default="U+0-10FFFF">
       <xs:annotation>
@@ -143,29 +159,65 @@
         </xs:union>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="font-size-adjust" default="1.0"/>
-    <xs:attribute name="baseline-adjust" default="0.0"/>
+    <xs:attribute name="font-size-adjust" default="1.0">
+      <xs:annotation>
+        <xs:documentation>Font size adjustment: &lt;number&gt; | &lt;percentage&gt;</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="baseline-adjust" default="0.0">
+      <xs:annotation>
+        <xs:documentation>Adjustment to font baseline: &lt;number&gt; | &lt;percentage&gt;</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="x-height">
+      <xs:annotation>
+        <xs:documentation>x-height: &lt;number&gt;</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="cap-height">
+      <xs:annotation>
+        <xs:documentation>Cap height: &lt;number&gt;</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="font-alias">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="alias"/>
+        <xs:element maxOccurs="unbounded" ref="alias"/>
       </xs:sequence>
       <xs:attributeGroup ref="font-alias.attlist"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="font-alias.attlist">
-    <xs:attribute name="file" use="required"/>
-    <xs:attribute name="entry" type="xs:positiveInteger"/>
+    <xs:attribute name="file" use="required">
+      <xs:annotation>
+        <xs:documentation>Font file to alias to a different name</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="entry" default="1" type="xs:positiveInteger">
+      <xs:annotation>
+        <xs:documentation>Entry number in a .TTC (TrueType Collection) file</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="alias">
+    <xs:annotation>
+      <xs:documentation>Alias to use to refer to a font file or TTC entry</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:attributeGroup ref="alias.attlist"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="alias.attlist">
-    <xs:attribute name="family-name" use="required"/>
-    <xs:attribute name="weight">
+    <xs:attribute name="family-name" use="required">
+      <xs:annotation>
+        <xs:documentation>Font family name to use for font file or TTC entry</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="weight" default="normal">
+      <xs:annotation>
+        <xs:documentation>Font weight that selects the aliased font file or TTC entry</xs:documentation>
+      </xs:annotation>
       <xs:simpleType>
         <xs:restriction base="xs:token">
           <xs:enumeration value="normal"/>
@@ -182,16 +234,31 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="italic">
-      <xs:simpleType>
-        <xs:restriction base="xs:token">
-          <xs:enumeration value="true"/>
-          <xs:enumeration value="false"/>
-        </xs:restriction>
-      </xs:simpleType>
+    <xs:attribute name="italic" default="false" type="ah.boolean">
+      <xs:annotation>
+        <xs:documentation>Whether italic font style selects the aliased font file or TTC entry</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+  <xs:element name="acc-folder">
+    <xs:annotation>
+      <xs:documentation>Adobe Fonts folder</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="acc-folder.attlist"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="acc-folder.attlist">
+    <xs:attribute name="path" use="required">
+      <xs:annotation>
+        <xs:documentation>Path to Adobe Fonts folder</xs:documentation>
+      </xs:annotation>
     </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="eudc-processing">
+    <xs:annotation>
+      <xs:documentation>End User Defined Character (EUDC) configuration</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="eudc-processing.model">
@@ -202,13 +269,16 @@
   </xs:element>
   <xs:complexType name="eudc-processing.model">
     <xs:sequence>
-      <xs:element minOccurs="0" ref="eudc-range"/>
+      <xs:element maxOccurs="unbounded" ref="eudc-range"/>
       <xs:element minOccurs="0" ref="eudc-system-default"/>
       <xs:element minOccurs="0" maxOccurs="unbounded" ref="eudc-map"/>
     </xs:sequence>
   </xs:complexType>
   <xs:attributeGroup name="eudc-processing.attlist">
-    <xs:attribute name="mapping">
+    <xs:attribute name="mapping" default="enable">
+      <xs:annotation>
+        <xs:documentation>Whether to enable EUDC processing: enable | disable</xs:documentation>
+      </xs:annotation>
       <xs:simpleType>
         <xs:restriction base="xs:token">
           <xs:enumeration value="enable"/>
@@ -223,24 +293,50 @@
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="eudc-range.attlist">
-    <xs:attribute name="start" use="required"/>
-    <xs:attribute name="end" use="required"/>
+    <xs:attribute name="start" use="required" type="xs:integer">
+      <xs:annotation>
+        <xs:documentation>Start of the EUDC range</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="end" type="xs:integer">
+      <xs:annotation>
+        <xs:documentation>End of the EUDC range</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="eudc-system-default">
+    <xs:annotation>
+      <xs:documentation>System default EUDC font file</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:attributeGroup ref="eudc-system-default.attlist"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="eudc-system-default.attlist">
-    <xs:attribute name="file-path" use="required"/>
+    <xs:attribute name="file-path" use="required">
+      <xs:annotation>
+        <xs:documentation>Path to EUDC font file</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
   <xs:element name="eudc-map">
+    <xs:annotation>
+      <xs:documentation>EUDC file for a font family</xs:documentation>
+    </xs:annotation>
     <xs:complexType>
       <xs:attributeGroup ref="eudc-map.attlist"/>
     </xs:complexType>
   </xs:element>
   <xs:attributeGroup name="eudc-map.attlist">
-    <xs:attribute name="family-name" use="required"/>
-    <xs:attribute name="file-path" use="required"/>
+    <xs:attribute name="family-name" use="required">
+      <xs:annotation>
+        <xs:documentation>Font family name</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="file-path" use="required">
+      <xs:annotation>
+        <xs:documentation>Path of EUDC file</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:attributeGroup>
 </xs:schema>

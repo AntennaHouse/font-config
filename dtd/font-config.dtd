@@ -1,48 +1,86 @@
 <?xml encoding="UTF-8"?>
 
-<!-- Copyright 2019 Antenna House, Inc. All rights reserved. -->
+<!--
+Schema for AH Formatter Font Configuration File.
 
-<!ENTITY % font-config.model "font-folder+,eudc-processing?">
+Copyright 2019-2022 Antenna House, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!ENTITY % ah.boolean "false|true">
+
+<!ENTITY % font-config.model "((font-folder+,acc-folder?)
+                               |(acc-folder,font-folder+)),
+                              eudc-processing?">
 
 <!ELEMENT font-config (%font-config.model;)>
 
 <!ATTLIST font-config
-  otf-metrics-mode (windows|typographic) 'typographic'>
+  windows-registry (enable|disable) 'enable'>
 
 <!ENTITY % font-folder.model "(font-entry|font-alias)*">
 
 <!ELEMENT font-folder (%font-folder.model;)>
 
 <!ATTLIST font-folder
-  path CDATA #REQUIRED>
+  path CDATA #REQUIRED
+  recursive (%ah.boolean;) 'false'>
 
 <!ELEMENT font-entry EMPTY>
 
 <!ATTLIST font-entry
-  file CDATA #REQUIRED>
+  file CDATA #REQUIRED
+  glyph-list CDATA #IMPLIED
+  skip-glyphname-mapping (%ah.boolean;) 'true'
+  font-exclude (%ah.boolean;) 'false'
+  unicode-range CDATA 'U+0-10FFFF'
+  font-size-adjust CDATA '1.0'
+  baseline-adjust CDATA '0.0'
+  x-height CDATA #IMPLIED
+  cap-height CDATA #IMPLIED>
 
-<!ELEMENT font-alias (alias)*>
+<!ELEMENT font-alias (alias)+>
 
 <!ATTLIST font-alias
-  file CDATA #REQUIRED>
+  file CDATA #REQUIRED
+  entry CDATA '1'>
 
 <!ELEMENT alias EMPTY>
 
 <!ATTLIST alias
-  family-name CDATA #REQUIRED>
+  family-name CDATA #REQUIRED
+  weight (normal|bold|100|200|300|400|500|600|700|800|900) 'normal'
+  italic (%ah.boolean;) 'false'>
 
-<!ENTITY % eudc-processing.model "eudc-range?,eudc-system-default?,
+<!ELEMENT acc-folder EMPTY>
+
+<!ATTLIST acc-folder
+  path CDATA #REQUIRED>
+
+<!ENTITY % eudc-processing.model "eudc-range+,eudc-system-default?,
                                   eudc-map*">
 
 <!ELEMENT eudc-processing (%eudc-processing.model;)>
 
 <!ATTLIST eudc-processing
-  mapping (enable|disable) #IMPLIED>
+  mapping (enable|disable) 'enable'>
 
 <!ELEMENT eudc-range EMPTY>
 
 <!ATTLIST eudc-range
-  start CDATA #REQUIRED>
+  start CDATA #REQUIRED
+  end CDATA #IMPLIED>
 
 <!ELEMENT eudc-system-default EMPTY>
 
@@ -52,4 +90,5 @@
 <!ELEMENT eudc-map EMPTY>
 
 <!ATTLIST eudc-map
-  family-name CDATA #REQUIRED>
+  family-name CDATA #REQUIRED
+  file-path CDATA #REQUIRED>
