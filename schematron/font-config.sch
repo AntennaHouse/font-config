@@ -42,6 +42,10 @@
 </assert>
   </rule>
 
+  <rule context="font-config/@otf-metrics-mode">
+    <report test="true()" role="Warning">'otf-metrics-mode' only applies with AH Formatter V6.6 and earlier.</report>
+  </rule>
+
   <rule context="font-folder/@path">
     <report test="contains(., '[Install directory]')" role="Error">Replace '[Install directory]' with the AH Formatter installation directory.</report>
     <report test="contains(., '[System font directory]')" role="Error">Replace '[System font directory]' with the location of the Windows font directory.</report>
