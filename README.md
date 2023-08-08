@@ -4,9 +4,9 @@
 ----
 # <a name="en"></a>font-config
 
-Schema and oXygen framework for AH Formatter 'font-config.xml' files.
+Schema and oXygen framework for Antenna House Formatter 'font-config.xml' files.
 
-**font-config** version numbers correspond to the AH Formatter version current at the time of the release.
+**font-config** version numbers correspond to the Antenna House Formatter version current at the time of the release.
 
 Each release includes schema files in Relax NG, Relax NG compact syntax, W3C XML Schema, and DTD formats.
 
@@ -89,9 +89,9 @@ limitations under the License.
 
 # <a name="ja"></a>font-config
 
-Relax NG schemaの AH Formatter オプション設定ファイル。
+Relax NG schemaの Antenna House Formatter オプション設定ファイル。
 
-**font-config** 版の番号は、リリース時の AH Formatter 版に対応しています。
+**font-config** 版の番号は、リリース時の Antenna House Formatter 版に対応しています。
 
 ## 免責事項
 
