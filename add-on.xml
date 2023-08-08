@@ -9,8 +9,20 @@
         <xt:type>framework</xt:type>
         <xt:author>Antenna House, Inc.</xt:author>
         <xt:name>font-config</xt:name>
-        <xt:description xmlns="http://www.w3.org/1999/xhtml">Edit AH Formatter Font Configuration File.</xt:description>
-        <xt:license><![CDATA[   Copyright 1999-2022 Antenna House, Inc.
+        <xt:description xmlns="http://www.w3.org/1999/xhtml">Edit Antenna House Formatter Font Configuration File.</xt:description>
+        <xt:license><![CDATA[   Copyright 1999-2023 Antenna House, Inc.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ]]></xt:license>
     </xt:extension>
 </xt:extensions>
